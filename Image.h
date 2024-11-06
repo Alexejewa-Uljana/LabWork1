@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Kernel.h"
 
 
 struct Color {
@@ -20,6 +21,7 @@ public:
     void SetColor(const Color& color, int x, int y);
     void Read(const char* path);
     void Export(const char* path) const;
+    void GaussianBlur(int raduis, float sigma);
 private:
     int m_width;
     int m_height;

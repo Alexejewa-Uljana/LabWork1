@@ -3,6 +3,7 @@
 #include <vector>
 #include "Image.h"
 #include "TurnImage.h"
+#include "Kernel.h"
 
 Color::Color()
     : r(0), g(0), b(0)
@@ -179,6 +180,46 @@ void Image::Export(const char* path) const
     }
     f.close();
     std::cout << "File created\n";
+}
+
+
+
+void Image::GaussianBlur(int radius, float sigma) {
+    std::vector<std::vector<float>> kernel = Gauss_Kernel::GenerateGaussianKernel(radius, sigma);
+    int kernelSize = 2 * radius + 1;
+    Image blurredImage(m_width, m_height);
+
+    for (int y = 0; y < m_height; ++y) {
+        for (int x = 0; x < m_width; ++x) {
+            Color newColor;
+            float totalWeight = 0.0f;
+
+            for (int ky = -radius; ky <= radius; ++ky) {
+                for (int kx = -radius; kx <= radius; ++kx) {
+                    int pixelX = x + kx;
+                    int pixelY = y + ky;
+                    if (pixelX < 0) pixelX = 0;
+                    if (pixelX >= m_width) pixelX = m_width - 1;
+                    if (pixelY < 0) pixelY = 0;
+                    if (pixelY >= m_height) pixelY = m_height - 1;
+
+                    Color currentColor = GetColor(pixelX, pixelY);
+
+                    newColor.r += currentColor.r * kernel[ky + radius][kx + radius];
+                    newColor.g += currentColor.g * kernel[ky + radius][kx + radius];
+                    newColor.b += currentColor.b * kernel[ky + radius][kx + radius];
+
+                    totalWeight += kernel[ky + radius][kx + radius];
+                }
+            }
+            newColor.r /= totalWeight;
+            newColor.g /= totalWeight;
+            newColor.b /= totalWeight;
+
+            blurredImage.SetColor(newColor, x, y);
+        }
+    }
+    m_colors = std::move(blurredImage.m_colors);
 }
 
 
