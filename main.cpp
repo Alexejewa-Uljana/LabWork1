@@ -1,5 +1,8 @@
+//
 #include <iostream>
+#include <vector>
 #include "Image.h"
+#include "TurnImage.h"
 
 int main(int argc, char* argv [])
 {
@@ -17,4 +20,7 @@ int main(int argc, char* argv [])
     Image Copy(0, 0);
     Copy.Read("image.bmp");
     Copy.Export("copy.bmp");
+    Turn_Image::RightTurn("copy.bmp");
+    Turn_Image::LeftTurn("copy.bmp");
+    std::cout << image.GetWidth() << std::endl;
 }
