@@ -14,6 +14,8 @@ class Image {
 public:
     Image(int width, int height);
     ~Image();
+    int GetWidth();
+    int GetHeight();
     Color GetColor(int x, int y) const;
     void SetColor(const Color& color, int x, int y);
     void Read(const char* path);

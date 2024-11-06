@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <Image.h>
+#include "Image.h"
+#include "TurnImage.h"
 
 Color::Color()
     : r(0), g(0), b(0)
@@ -24,6 +25,16 @@ Image::Image(int width, int height)
 
 Image::~Image()
 {
+}
+
+int Image::GetWidth()
+{
+    return m_width;
+}
+
+int Image::GetHeight()
+{
+    return m_height;
 }
 
 Color Image::GetColor(int x, int y) const
