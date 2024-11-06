@@ -9,10 +9,10 @@ LDIR =../lib
 
 LIBS=-lm
 
-DEPS = Image.h TurnImage.h
+DEPS = Image.h TurnImage.h Kernel.h
 
 
-OBJ = main.o Image.o RightTurnImage.o LeftTurnImage.o
+OBJ = main.o Image.o RightTurnImage.o LeftTurnImage.o Kernel.o
 
 .PHONY: default
 
