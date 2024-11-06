@@ -3,24 +3,18 @@
 #include <vector>
 #include "Image.h"
 #include "TurnImage.h"
+#include "Kernel.h"
 
 int main(int argc, char* argv [])
 {
-    int width = 640;
-    int height = 480;
-    Image image(width, height);
-    for (int y = 0; y < height; ++y)
-    {
-        for(int x = 0; x < width; ++x)
-       {
-            image.SetColor(Color((float)x / (float)width, 1.0f - ((float)x / (float)width), (float)y / (float)height), x, y);
-       }
-    }
-    image.Export("image.bmp");
-    Image Copy(0, 0);
-    Copy.Read("image.bmp");
-    Copy.Export("copy.bmp");
-    Turn_Image::RightTurn("copy.bmp");
-    Turn_Image::LeftTurn("copy.bmp");
-    std::cout << image.GetWidth() << std::endl;
+    Turn_Image::RightTurn("123.bmp");
+    Turn_Image::LeftTurn("123.bmp");
+    Image image_left(0, 0);
+    image_left.Read("Left_turn_image.bmp");
+    image_left.GaussianBlur(10, 10.0f);
+    image_left.Export("Blurring_left_turn_image.bmp");
+    Image image_right(0, 0);
+    image_right.Read("Right_turn_image.bmp");
+    image_right.GaussianBlur(10, 10.0f);
+    image_right.Export("Blurring_right_turn_image.bmp");
 }
