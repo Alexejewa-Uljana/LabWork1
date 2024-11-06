@@ -1,4 +1,4 @@
-//Uljana Alexejewa st129990@student.spbu.ru
+//Алексеева Ульяна st129990@student.spbu.ru
 
 
 #ifndef KERNEL_H

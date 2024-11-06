@@ -1,5 +1,8 @@
+//Алексеева Ульяна st129990@student.spbu.ru
+
 #pragma once
 
+#include <iostream>
 #include <vector>
 #include "Kernel.h"
 

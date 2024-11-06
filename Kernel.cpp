@@ -1,3 +1,5 @@
+//Алексеева Ульяна st129990@student.spbu.ru
+
 #include <math.h>
 #include <vector>
 #include <algorithm>
