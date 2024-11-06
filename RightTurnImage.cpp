@@ -4,6 +4,7 @@
 #include "Image.h"
 #include "TurnImage.h"
 #include <vector>
+#include "Kernel.h"
 
 void Turn_Image::RightTurn(const char* path)
 {
