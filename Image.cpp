@@ -91,17 +91,15 @@ void Image::Read(const char* path)
         f.ignore(paddingAmount);
     }
     f.close();
-    std::cout << "File read" << std::endl;
 }
 
 void Image::Export(const char* path) const
 {
     std::ofstream f;
     f.open(path, std::ios::out | std::ios::binary);
-
     if (!f.is_open())
     {
-        std::cout << "File could not be opened";
+        std::cout << "File could not be opened" << std::endl;
         return;
     }
     unsigned char bmpPad[3] = {0, 0, 0};
@@ -124,7 +122,6 @@ void Image::Export(const char* path) const
     fileHeader[11] = 0;
     fileHeader[12] = 0;
     fileHeader[13] = 0;
-
     unsigned char informationHeader[informationHeaderSize];
     informationHeader[0] = informationHeaderSize;
     informationHeader[1] = 0;
@@ -181,21 +178,17 @@ void Image::Export(const char* path) const
         f.write(reinterpret_cast<char*>(bmpPad), paddingAmount);
     }
     f.close();
-    std::cout << "File created\n";
 }
 
-
-
-void Image::GaussianBlur(int radius, float sigma) {
+void Image::GaussianBlur(int radius, float sigma)
+{
     std::vector<std::vector<float>> kernel = Gauss_Kernel::GenerateGaussianKernel(radius, sigma);
     int kernelSize = 2 * radius + 1;
     Image blurredImage(m_width, m_height);
-
     for (int y = 0; y < m_height; ++y) {
         for (int x = 0; x < m_width; ++x) {
             Color newColor;
             float totalWeight = 0.0f;
-
             for (int ky = -radius; ky <= radius; ++ky) {
                 for (int kx = -radius; kx <= radius; ++kx) {
                     int pixelX = x + kx;
@@ -204,25 +197,18 @@ void Image::GaussianBlur(int radius, float sigma) {
                     if (pixelX >= m_width) pixelX = m_width - 1;
                     if (pixelY < 0) pixelY = 0;
                     if (pixelY >= m_height) pixelY = m_height - 1;
-
                     Color currentColor = GetColor(pixelX, pixelY);
-
                     newColor.r += currentColor.r * kernel[ky + radius][kx + radius];
                     newColor.g += currentColor.g * kernel[ky + radius][kx + radius];
                     newColor.b += currentColor.b * kernel[ky + radius][kx + radius];
-
                     totalWeight += kernel[ky + radius][kx + radius];
                 }
             }
             newColor.r /= totalWeight;
             newColor.g /= totalWeight;
             newColor.b /= totalWeight;
-
             blurredImage.SetColor(newColor, x, y);
         }
     }
     m_colors = std::move(blurredImage.m_colors);
 }
-
-
-

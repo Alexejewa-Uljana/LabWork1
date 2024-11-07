@@ -20,7 +20,6 @@ void Turn_Image::LeftTurn(const char* path)
             turn_image.SetColor(image.GetColor(x, y), height-  y - 1, x);
         }
     }
-    std::cout << "Left turn image created" << std::endl;
     turn_image.Export("Left_turn_image.bmp");
 }
 
