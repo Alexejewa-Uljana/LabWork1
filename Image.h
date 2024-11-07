@@ -6,6 +6,8 @@
 #include <vector>
 #include "Kernel.h"
 
+#ifndef IMAGE_H
+#define IMAGE_H
 
 struct Color {
     float r, g, b;
@@ -30,3 +32,5 @@ private:
     int m_height;
     std::vector<Color> m_colors;
 };
+
+#endif
