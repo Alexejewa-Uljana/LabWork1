@@ -6,7 +6,7 @@
 
 ## Description
 
-LabWork1 contains structure Color for RGB; class Image for BMP images with methods for creat, read, export, getColor/SetColor of 1 pixel, getHeight/getWidth, Gauss blur; functions to turn right/left 90 degrees object from class Image.
+LabWork1 contains structure Color for RGB; class Image for BMP images with methods for creat, read, export, getColor/SetColor of 1 pixel, getHeight/getWidth, Gauss blur; functions to turn right/left 90 degrees object from class Image. The code takes the file name, radius(int type), sigma(float type).
 
 ## Build
 
