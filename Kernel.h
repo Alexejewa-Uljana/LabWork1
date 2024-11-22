@@ -6,7 +6,7 @@
 
 namespace Gauss_Kernel
 {
-    std::vector<std::vector<float>> GenerateGaussianKernel(int radius, float sigma);
+std::vector<std::vector<float>> GenerateGaussianKernel(int radius, float sigma);
 }
 
 

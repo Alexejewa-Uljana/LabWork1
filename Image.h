@@ -7,7 +7,8 @@
 #include "Kernel.h"
 
 
-struct Color {
+struct Color
+{
     float r, g, b;
     Color();
     Color(float r, float g, float b);
@@ -40,7 +41,8 @@ struct BITMAPINFOHEADER
 };
 #pragma pack(pop)
 
-class Image {
+class Image
+{
 public:
     Image(int width, int height);
     ~Image();

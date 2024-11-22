@@ -6,8 +6,8 @@
 
 namespace Turn_Image
 {
-    void RightTurn(const char* path);
-    void LeftTurn(const char* path);
+void RightTurn(const char* path);
+void LeftTurn(const char* path);
 }
 
 
