@@ -9,7 +9,7 @@
 
 int main(int argc, char* argv [])
 {
-    std::cout << "Enter path to file, radius and sigma for Gauss blur" << std::endl;
+    std::cout << "Enter path to file, radius(int type) and sigma(float type) for Gauss blur" << std::endl;
     std::string path_string;
     std::getline(std::cin, path_string);
     const char* path = path_string.c_str();
