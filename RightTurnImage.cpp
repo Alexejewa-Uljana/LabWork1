@@ -17,7 +17,7 @@ void Turn_Image::RightTurn(const char* path)
     {
         for(int x = 0; x < width; ++x)
         {
-            turn_image.SetColor(image.GetColor(x, y), y, width - x - 1);
+            turn_image.SetColor(image.GetColor(x, y), height - y - 1, x);
         }
     }
     turn_image.Export("Right_turn_image.bmp");
