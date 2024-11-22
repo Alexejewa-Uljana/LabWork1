@@ -54,130 +54,83 @@ void Image::SetColor(const Color& color, int x, int y)
 
 void Image::Read(const char* path)
 {
-    std::ifstream f;
-    f.open(path, std::ios::in | std::ios::binary);
-    if (!f.is_open())
+    std::ifstream file(path, std::ios::binary);
+    if (!file)
     {
-        std::cout << "File could not be opened" << std::endl;
+        std::cerr << "File could not be opened." << std::endl;
         return;
     }
-    const int fileHeaderSize = 14;
-    const int informationHeaderSize = 40;
-    unsigned  char fileHeader[fileHeaderSize];
-    f.read(reinterpret_cast<char*>(fileHeader), fileHeaderSize);
-    if (fileHeader[0] != 'B' || fileHeader[1] != 'M')
+    BITMAPFILEHEADER fileHeader;
+    BITMAPINFOHEADER infoHeader;
+    file.read(reinterpret_cast<char*>(&fileHeader), sizeof(fileHeader));
+    file.read(reinterpret_cast<char*>(&infoHeader), sizeof(infoHeader));
+    if (fileHeader.bfType != 0x4D42)
     {
-        std::cout << "The specified path is not a bitmap image" << std::endl;
-        f.close();
+        std::cerr << "The specified path is not a bitmap image." << std::endl;
         return;
     }
-    unsigned  char informationHeader[informationHeaderSize];
-    f.read(reinterpret_cast<char*>(informationHeader), informationHeaderSize);
-    int fileSize = fileHeader[2] + (fileHeader[3] << 8) + (fileHeader[4] << 16) + (fileHeader[5] << 24);
-    m_width = informationHeader[4] + (informationHeader[5] << 8) + (informationHeader[6] << 16) + (informationHeader[7] << 24);
-    m_height = informationHeader[8] + (informationHeader[9] << 8) + (informationHeader[10] << 16) + (informationHeader[11] << 24);
+    m_width = infoHeader.biWidth;
+    m_height = abs(infoHeader.biHeight);
     m_colors.resize(m_width * m_height);
-    const int paddingAmount = ((4 - (m_width * 3) % 4) % 4);
-    for(int y = 0; y < m_height; ++y)
+    const int paddingAmount = (4 - (m_width * 3) % 4) % 4;
+    file.seekg(fileHeader.bfOffBits, std::ios::beg);
+    const bool isFlipped = infoHeader.biHeight > 0;
+    for (int y = 0; y < m_height; ++y)
     {
-        for(int x = 0; x < m_width; ++x)
+        int row = isFlipped ? (m_height - 1 - y) : y;
+        for (int x = 0; x < m_width; ++x)
         {
             unsigned char color[3];
-            f.read(reinterpret_cast<char*>(color), 3);
-            m_colors[y * m_width + x].r = static_cast<float>(color[2]) / 255.0f;
-            m_colors[y * m_width + x].g = static_cast<float>(color[1]) / 255.0f;
-            m_colors[y * m_width + x].b = static_cast<float>(color[0]) / 255.0f;
+            file.read(reinterpret_cast<char*>(color), 3);
+            m_colors[row * m_width + x] = Color(
+                                              color[2] / 255.0f,
+                                              color[1] / 255.0f,
+                                              color[0] / 255.0f
+                                          );
         }
-        f.ignore(paddingAmount);
+        file.ignore(paddingAmount);
     }
-    f.close();
 }
 
 void Image::Export(const char* path) const
 {
-    std::ofstream f;
-    f.open(path, std::ios::out | std::ios::binary);
-    if (!f.is_open())
+    std::ofstream file(path, std::ios::binary);
+    if (!file)
     {
-        std::cout << "File could not be opened" << std::endl;
+        std::cerr << "File could not be opened." << std::endl;
         return;
     }
-    unsigned char bmpPad[3] = {0, 0, 0};
-    const int paddingAmount = ((4 - (m_width * 3) % 4) % 4);
-    const int fileHeaderSize = 14;
-    const int informationHeaderSize = 40;
-    const int fileSize = fileHeaderSize + informationHeaderSize + m_width * m_height * 3 + paddingAmount * m_height;
-    unsigned char fileHeader[fileHeaderSize];
-    fileHeader[0] = 'B';
-    fileHeader[1] = 'M';
-    fileHeader[2] = fileSize;
-    fileHeader[3] = fileSize >> 8;
-    fileHeader[4] = fileSize >> 16;
-    fileHeader[5] = fileSize >> 24;
-    fileHeader[6] = 0;
-    fileHeader[7] = 0;
-    fileHeader[8] = 0;
-    fileHeader[9] = 0;
-    fileHeader[10] = fileHeaderSize + informationHeaderSize;
-    fileHeader[11] = 0;
-    fileHeader[12] = 0;
-    fileHeader[13] = 0;
-    unsigned char informationHeader[informationHeaderSize];
-    informationHeader[0] = informationHeaderSize;
-    informationHeader[1] = 0;
-    informationHeader[2] = 0;
-    informationHeader[3] = 0;
-    informationHeader[4] = m_width;
-    informationHeader[5] = m_width >> 8;
-    informationHeader[6] = m_width >> 16;
-    informationHeader[7] = m_width >> 24;
-    informationHeader[8] = m_height;
-    informationHeader[9] = m_height >> 8;
-    informationHeader[10] = m_height >> 16;
-    informationHeader[11] = m_height >> 24;
-    informationHeader[12] = 1;
-    informationHeader[13] = 0;
-    informationHeader[14] = 24;
-    informationHeader[15] = 0;
-    informationHeader[16] = 0;
-    informationHeader[17] = 0;
-    informationHeader[18] = 0;
-    informationHeader[19] = 0;
-    informationHeader[20] = 0;
-    informationHeader[21] = 0;
-    informationHeader[22] = 0;
-    informationHeader[23] = 0;
-    informationHeader[24] = 0;
-    informationHeader[25] = 0;
-    informationHeader[26] = 0;
-    informationHeader[27] = 0;
-    informationHeader[28] = 0;
-    informationHeader[29] = 0;
-    informationHeader[30] = 0;
-    informationHeader[31] = 0;
-    informationHeader[32] = 0;
-    informationHeader[33] = 0;
-    informationHeader[34] = 0;
-    informationHeader[35] = 0;
-    informationHeader[36] = 0;
-    informationHeader[37] = 0;
-    informationHeader[38] = 0;
-    informationHeader[39] = 0;
-    f.write(reinterpret_cast<char*>(fileHeader), fileHeaderSize);
-    f.write(reinterpret_cast<char*>(informationHeader), informationHeaderSize);
-    for(int y = 0; y < m_height; ++y)
+    BITMAPFILEHEADER fileHeader = {};
+    BITMAPINFOHEADER infoHeader = {};
+    const int paddingAmount = (4 - (m_width * 3) % 4) % 4;
+    const int dataSize = (m_width * 3 + paddingAmount) * m_height;
+    fileHeader.bfType = 0x4D42;
+    fileHeader.bfSize = sizeof(fileHeader) + sizeof(infoHeader) + dataSize;
+    fileHeader.bfOffBits = sizeof(fileHeader) + sizeof(infoHeader);
+    infoHeader.biSize = sizeof(infoHeader);
+    infoHeader.biWidth = m_width;
+    infoHeader.biHeight = -m_height;
+    infoHeader.biPlanes = 1;
+    infoHeader.biBitCount = 24;
+    infoHeader.biSizeImage = dataSize;
+    file.write(reinterpret_cast<const char*>(&fileHeader), sizeof(fileHeader));
+    file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
+    unsigned char padding[3] = {0, 0, 0};
+    for (int y = 0; y < m_height; ++y)
     {
-        for(int x = 0; x < m_width; ++x)
+        for (int x = 0; x < m_width; ++x)
         {
-            unsigned char r = static_cast<unsigned char>(GetColor(x, y).r * 255.0f);
-            unsigned char g = static_cast<unsigned char>(GetColor(x, y).g * 255.0f);
-            unsigned char b = static_cast<unsigned char>(GetColor(x, y).b * 255.0f);
-            unsigned char color[] = {b, g, r};
-            f.write(reinterpret_cast<char*>(color), 3);
+            const Color& c = GetColor(x, y);
+            unsigned char color[3] =
+            {
+                static_cast<unsigned char>(c.b * 255),
+                static_cast<unsigned char>(c.g * 255),
+                static_cast<unsigned char>(c.r * 255)
+            };
+            file.write(reinterpret_cast<const char*>(color), 3);
         }
-        f.write(reinterpret_cast<char*>(bmpPad), paddingAmount);
+        file.write(reinterpret_cast<const char*>(padding), paddingAmount);
     }
-    f.close();
 }
 
 void Image::GaussianBlur(int radius, float sigma)
